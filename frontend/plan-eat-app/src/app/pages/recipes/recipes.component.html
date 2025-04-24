@@ -4,8 +4,11 @@
     + Add New Recipe
   </button>
 </router-outlet>
-
+<app-category-filter (categoryChanged)="applyFilter($event)"></app-category-filter>
 <div class="recipes-container">
+  <div *ngIf="recipes.length === 0" class="no-recipes-message">
+    No recipes under that category
+  </div>
   <mat-card *ngFor="let recipe of recipes" class="recipe-card">
     <mat-card-header>
       <mat-card-title>{{ recipe.title }}</mat-card-title>

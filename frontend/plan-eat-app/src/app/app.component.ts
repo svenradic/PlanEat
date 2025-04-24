@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { Recipe } from './models/recipe.model';
 import { RecipeService } from './services/recipe.service';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -13,7 +13,6 @@ import { MatButtonModule } from '@angular/material/button';
     CommonModule,
     RouterOutlet,
     RouterLink,
-    RouterLinkActive,
     MatToolbarModule,
     MatButtonModule,
   ],

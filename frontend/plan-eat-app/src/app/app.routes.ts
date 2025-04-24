@@ -4,7 +4,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { RecipesComponent } from './pages/recipes/recipes.component';
 import { MealPlanComponent } from './pages/meal-plan/meal-plan.component';
 import { ShoppingListComponent } from './pages/shopping-list/shopping-list.component';
-import { AddRecipeComponent } from './pages/add-recipe/add-recipe.component';
+import { AddRecipeComponent } from './components/add-recipe/add-recipe.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },

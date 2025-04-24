@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, collectionData, addDoc } from '@angular/fire/firestore';
+import { Firestore, collection, collectionData, addDoc, query, where } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { Recipe } from '../models/recipe.model';
 
@@ -20,4 +20,9 @@ export class RecipeService {
     return addDoc(recipesRef, recipe);
   }
   
+  getRecipesByCategory(category: string): Observable<Recipe[]> {
+    const recipesRef = collection(this.firestore, 'recipes');
+    const categoryQuery = query(recipesRef, where('category', '==', category));
+    return collectionData(categoryQuery, { idField: 'id' }) as Observable<Recipe[]>;
+  }
 }

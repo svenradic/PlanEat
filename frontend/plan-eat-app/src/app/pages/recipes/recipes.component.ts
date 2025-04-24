@@ -9,6 +9,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { RouterLinkActive } from '@angular/router';
+import { CategoryFilterComponent } from '../../components/category-filter/category-filter.component';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-recipes',
@@ -23,7 +25,8 @@ import { RouterLinkActive } from '@angular/router';
     MatCardModule,
     RouterLink,
     RouterOutlet,
-    RouterLinkActive
+    RouterLinkActive,
+    CategoryFilterComponent,
   ],
   templateUrl: './recipes.component.html',
   styleUrl: './recipes.component.css',
@@ -37,5 +40,17 @@ export class RecipesComponent {
     this.recipeService.getRecipes().subscribe((data: Recipe[]) => {
       this.recipes = data;
     });
+  }
+
+  applyFilter(category: string) {
+    if (category) {
+      category.toLowerCase() === 'all' ? this.ngOnInit():  this.recipeService.getRecipesByCategory(category).subscribe((data: Recipe[]) => {
+        console.log('Dohvaćeni recepti:', data);
+        this.recipes = data;
+        
+      });
+    } else{
+      this.ngOnInit();
+    }
   }
 }
