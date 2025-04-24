@@ -1,6 +1,11 @@
+<router-outlet>
+  <mat-toolbar color="primary">
+    <span>PlanEat App</span>
+    <span class="spacer"></span>
+    <a mat-button routerLink="/">Home</a>
+    <a mat-button routerLink="/recipes">Recipes</a>
+    <a mat-button routerLink="/meal-plan">Meal Plan</a>
+    <a mat-button routerLink="/shopping-list">Shopping List</a>
+  </mat-toolbar>
+</router-outlet>
 
-
-<h1>Recipes</h1>
-<ul>
-  <li *ngFor="let recipe of recipes">{{ recipe.title }}</li>
-</ul>

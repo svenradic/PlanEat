@@ -1,0 +1,25 @@
+<h2>Add New Recipe</h2>
+
+<div class="form-container">
+  <mat-form-field appearance="fill">
+    <mat-label>Title</mat-label>
+    <input matInput [(ngModel)]="title">
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Description</mat-label>
+    <textarea matInput [(ngModel)]="description"></textarea>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Category</mat-label>
+    <input matInput [(ngModel)]="category">
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Ingredients (comma separated)</mat-label>
+    <input matInput [(ngModel)]="ingredients">
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" (click)="saveRecipe()">Save Recipe</button>
+</div>
