@@ -1,0 +1,33 @@
+<h2>Edit Recipe</h2>
+
+<div *ngIf="!recipe">Loading recipe...</div>
+
+<div class="form-container" *ngIf="recipe">
+  <mat-form-field appearance="fill">
+    <mat-label>Title</mat-label>
+    <input matInput [(ngModel)]="recipe.title" name="title" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Description</mat-label>
+    <textarea
+      matInput
+      [(ngModel)]="recipe.description"
+      name="description"
+    ></textarea>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Category</mat-label>
+    <input matInput [(ngModel)]="recipe.category" name="category" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Ingredients (comma separated)</mat-label>
+    <input matInput [(ngModel)]="recipe.ingredients" name="ingredients" />
+  </mat-form-field>
+  <button mat-raised-button color="primary" (click)="saveChanges()">
+    Save Changes
+  </button>
+</div>
+

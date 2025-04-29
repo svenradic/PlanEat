@@ -1,11 +1,13 @@
 <router-outlet>
-  <mat-toolbar color="primary">
-    <span>PlanEat App</span>
+  <mat-toolbar color="secondary" class="nav-bar">
+    <span routerLink="/">PlanEat App</span>
     <span class="spacer"></span>
-    <a mat-button routerLink="/">Home</a>
-    <a mat-button routerLink="/recipes">Recipes</a>
-    <a mat-button routerLink="/meal-plan">Meal Plan</a>
-    <a mat-button routerLink="/shopping-list">Shopping List</a>
+    <div *ngIf="isLoggedIn()">
+      <a mat-button routerLink="/home">Home</a>
+      <a mat-button routerLink="/recipes">Recipes</a>
+      <a mat-button routerLink="/meal-plan">Meal Plan</a>
+      <a mat-button routerLink="/shopping-list">Shopping List</a>
+      <button mat-button (click)="logout()">Logout</button>
+    </div>
   </mat-toolbar>
 </router-outlet>
-

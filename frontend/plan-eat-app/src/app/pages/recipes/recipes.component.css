@@ -9,3 +9,15 @@
 .recipe-card {
   width: 300px;
 }
+.actions{
+  margin-top: auto;
+}
+
+.recipes-header {
+  text-align: center;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 30px;
+}

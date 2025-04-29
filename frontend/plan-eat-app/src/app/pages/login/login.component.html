@@ -1,0 +1,31 @@
+<div class="login-container">
+  <h2>Welcome to PlanEat!</h2>
+
+  <button mat-raised-button color="primary" (click)="loginGoogle()">
+    Sign in with Google
+  </button>
+
+  <div class="divider">or</div>
+
+  <div class="form-group">
+    <input matInput placeholder="Email" [(ngModel)]="email" name="email" />
+    <input
+      matInput
+      type="password"
+      placeholder="Password"
+      [(ngModel)]="password"
+      name="password"
+    />
+    <button mat-raised-button color="accent" (click)="loginEmail()">
+      Login with Email
+    </button>
+
+    <router-outlet>
+      <p
+        >Don't have an account?<span routerLink="/register">
+          Sign up
+        </span></p
+      >
+    </router-outlet>
+  </div>
+</div>

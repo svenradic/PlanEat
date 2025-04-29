@@ -6,7 +6,7 @@ import { MatCardModule } from '@angular/material/card';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
+import { MatButton, MatButtonModule } from '@angular/material/button';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { RouterLinkActive } from '@angular/router';
 import { CategoryFilterComponent } from '../../components/category-filter/category-filter.component';
@@ -27,6 +27,7 @@ import { Observable } from 'rxjs';
     RouterOutlet,
     RouterLinkActive,
     CategoryFilterComponent,
+    MatButtonModule
   ],
   templateUrl: './recipes.component.html',
   styleUrl: './recipes.component.css',
@@ -39,6 +40,17 @@ export class RecipesComponent {
   ngOnInit() {
     this.recipeService.getRecipes().subscribe((data: Recipe[]) => {
       this.recipes = data;
+      console.log('Dohvaćeni recepti:', this.recipes);
+    });
+  }
+  
+  deleteRecipe(recipeId?: string){
+    if(!recipeId) return;
+    this.recipeService.deleteRecipe(recipeId).then(() => {
+      console.log('Recept uspješno obrisan!');
+      this.recipes = this.recipes.filter(recipe => recipe.id !== recipeId);
+    }).catch((error) => {
+      console.error('Greška prilikom brisanja recepta:', error);
     });
   }
 

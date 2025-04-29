@@ -1,10 +1,14 @@
-<h1>Recipes</h1>
 <router-outlet>
-  <button mat-raised-button color="primary" routerLink="/recipes/add-recipe">
-    + Add New Recipe
-  </button>
+  <div class="recipes-header">
+    <h1>Recipes</h1>
+    <button mat-raised-button color="primary" routerLink="/recipes/add-recipe">
+      + Add New Recipe
+    </button>
+  </div>
 </router-outlet>
-<app-category-filter (categoryChanged)="applyFilter($event)"></app-category-filter>
+<app-category-filter
+  (categoryChanged)="applyFilter($event)"
+></app-category-filter>
 <div class="recipes-container">
   <div *ngIf="recipes.length === 0" class="no-recipes-message">
     No recipes under that category
@@ -21,5 +25,19 @@
         <li *ngFor="let ingredient of recipe.ingredients">{{ ingredient }}</li>
       </ul>
     </mat-card-content>
+    <mat-card-actions class="actions">
+      <router-outlet>
+        <button
+          mat-button
+          color="primary"
+          routerLink="/recipes/edit-recipe/{{ recipe.id }}"
+        >
+          Edit
+        </button>
+      </router-outlet>
+      <button mat-button color="warn" (click)="deleteRecipe(recipe.id)">
+        Delete
+      </button>
+    </mat-card-actions>
   </mat-card>
 </div>

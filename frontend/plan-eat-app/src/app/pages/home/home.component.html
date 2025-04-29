@@ -1,1 +1,74 @@
-<p>home works!</p>
+<!-- src/app/pages/home/home.component.html -->
+<div
+  class="home-container mat-typography"
+  style="padding: 24px; text-align: center"
+>
+  <h1 class="mat-display-2" style="margin-bottom: 16px">
+    Dobrodošli u <span style="color: #4caf50">PlanEat</span>!
+  </h1>
+
+  <p class="mat-body-1" style="margin-bottom: 32px">
+    PlanEat je vaša pametna aplikacija za jednostavno planiranje obroka,
+    upravljanje receptima i izradu shopping liste – sve na jednom mjestu.
+  </p>
+
+  <mat-grid-list
+    cols="1"
+    rowHeight="200px"
+    gutterSize="24px"
+    class="mat-elevation-z1"
+    style="margin-bottom: 32px"
+  >
+    <mat-grid-tile>
+      <mat-card class="mat-tile">
+        <mat-card-header>
+          <mat-card-title>🥗 Kreirajte vlastite recepte</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          Unesite omiljene recepte s detaljima poput sastojaka, uputa i
+          nutritivnih vrijednosti.
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
+    <mat-grid-tile>
+      <mat-card class="mat-tile">
+        <mat-card-header>
+          <mat-card-title
+            >🗓️ Isplanirajte obroke za cijeli tjedan</mat-card-title
+          >
+        </mat-card-header>
+        <mat-card-content>
+          Odaberite recepte i sastavite meal plan koji vam odgovara – zdravo,
+          brzo i jednostavno.
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
+    <mat-grid-tile>
+      <mat-card class="mat-tile">
+        <mat-card-header>
+          <mat-card-title>🛒 Shopping lista bez stresa</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          PlanEat automatski generira popis za kupovinu na temelju vašeg plana –
+          bez zaboravljenih sastojaka.
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  </mat-grid-list>
+
+  <div
+    style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap"
+  >
+    <button mat-raised-button color="primary" routerLink="/plan">
+      Isprobaj odmah
+    </button>
+    <button mat-stroked-button color="primary" routerLink="/register">
+      Registriraj se
+    </button>
+    <button mat-stroked-button color="accent" routerLink="/login">
+      Prijavi se
+    </button>
+  </div>
+</div>
