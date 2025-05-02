@@ -1,13 +1,14 @@
 <router-outlet>
   <mat-toolbar color="secondary" class="nav-bar">
     <span routerLink="/">PlanEat App</span>
+    <p>Hello {{getUserName()}}</p>
     <span class="spacer"></span>
-    <div *ngIf="isLoggedIn()">
-      <a mat-button routerLink="/home">Home</a>
+    <div>
+      <a mat-button routerLink="/">Home</a>
       <a mat-button routerLink="/recipes">Recipes</a>
       <a mat-button routerLink="/meal-plan">Meal Plan</a>
       <a mat-button routerLink="/shopping-list">Shopping List</a>
-      <button mat-button (click)="logout()">Logout</button>
+      <button *ngIf="isLoggedIn()" mat-button (click)="logout()">Logout</button>
     </div>
   </mat-toolbar>
 </router-outlet>

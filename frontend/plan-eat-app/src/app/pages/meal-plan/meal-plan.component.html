@@ -1,1 +1,95 @@
-<p>meal-plan works!</p>
+<h2>Weekly Meal Plan</h2>
+
+<div class="week-navigation">
+  <button mat-icon-button (click)="previousWeek()">
+    <mat-icon>chevron_left</mat-icon>
+  </button>
+  <span class="week-label"
+    >{{ mealPlan.weekStart }} - {{ mealPlan.weekEnd }}</span
+  >
+  <button mat-icon-button (click)="nextWeek()">
+    <mat-icon>chevron_right</mat-icon>
+  </button>
+</div>
+
+<form (ngSubmit)="saveMealPlan()" *ngIf="!isLoading" class="meal-plan-form">
+  <table
+    mat-table
+    [dataSource]="daysOfWeek"
+    class="mat-elevation-z2 full-width"
+  >
+    <ng-container matColumnDef="day">
+      <th mat-header-cell *matHeaderCellDef>Day</th>
+      <td mat-cell *matCellDef="let day">{{ day }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="breakfast">
+      <th mat-header-cell *matHeaderCellDef>Breakfast</th>
+      <td mat-cell *matCellDef="let day">
+        <mat-form-field class="full-width">
+          <mat-select
+            multiple
+            [(ngModel)]="mealPlan.days[day].breakfast"
+            [name]="day + '_breakfast'"
+          >
+
+            <mat-option
+              *ngFor="let recipe of breakfastRecipes"
+              [value]="recipe.id"
+            >
+              {{ recipe.title }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="lunch">
+      <th mat-header-cell *matHeaderCellDef>Lunch</th>
+      <td mat-cell *matCellDef="let day">
+        <mat-form-field class="full-width">
+          <mat-select
+            multiple
+            [(ngModel)]="mealPlan.days[day].lunch"
+            [name]="day + '_lunch'"
+          >
+            <mat-option *ngFor="let recipe of lunchRecipes" [value]="recipe.id">
+              {{ recipe.title }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="dinner">
+      <th mat-header-cell *matHeaderCellDef>Dinner</th>
+      <td mat-cell *matCellDef="let day">
+        <mat-form-field class="full-width">
+          <mat-select
+            multiple
+            [(ngModel)]="mealPlan.days[day].dinner"
+            [name]="day + '_dinner'"
+          >
+            <mat-option
+              *ngFor="let recipe of dinnerRecipes"
+              [value]="recipe.id"
+            >
+              {{ recipe.title }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+
+  <div class="save-button-container">
+    <button mat-raised-button color="primary" type="submit">
+      Save Meal Plan
+    </button>
+  </div>
+</form>
+
+<mat-spinner *ngIf="isLoading"></mat-spinner>

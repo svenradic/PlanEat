@@ -1,15 +1,11 @@
 <!-- src/app/pages/home/home.component.html -->
-<div
-  class="home-container mat-typography"
-  style="padding: 24px; text-align: center"
->
+<div class="home-container mat-typography" style="padding: 24px; text-align: center">
   <h1 class="mat-display-2" style="margin-bottom: 16px">
-    Dobrodošli u <span style="color: #4caf50">PlanEat</span>!
+    Welcome to <span style="color: #4caf50">PlanEat</span>!
   </h1>
 
   <p class="mat-body-1" style="margin-bottom: 32px">
-    PlanEat je vaša pametna aplikacija za jednostavno planiranje obroka,
-    upravljanje receptima i izradu shopping liste – sve na jednom mjestu.
+    PlanEat is your smart app for easy meal planning, recipe management, and shopping list creation – all in one place.
   </p>
 
   <mat-grid-list
@@ -22,11 +18,10 @@
     <mat-grid-tile>
       <mat-card class="mat-tile">
         <mat-card-header>
-          <mat-card-title>🥗 Kreirajte vlastite recepte</mat-card-title>
+          <mat-card-title>🥗 Create Your Own Recipes</mat-card-title>
         </mat-card-header>
         <mat-card-content>
-          Unesite omiljene recepte s detaljima poput sastojaka, uputa i
-          nutritivnih vrijednosti.
+          Enter your favorite recipes with details like ingredients, instructions, and nutritional values.
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>
@@ -34,13 +29,10 @@
     <mat-grid-tile>
       <mat-card class="mat-tile">
         <mat-card-header>
-          <mat-card-title
-            >🗓️ Isplanirajte obroke za cijeli tjedan</mat-card-title
-          >
+          <mat-card-title>🗓️ Plan Meals for the Whole Week</mat-card-title>
         </mat-card-header>
         <mat-card-content>
-          Odaberite recepte i sastavite meal plan koji vam odgovara – zdravo,
-          brzo i jednostavno.
+          Choose recipes and build a meal plan that fits your needs – healthy, fast, and simple.
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>
@@ -48,27 +40,23 @@
     <mat-grid-tile>
       <mat-card class="mat-tile">
         <mat-card-header>
-          <mat-card-title>🛒 Shopping lista bez stresa</mat-card-title>
+          <mat-card-title>🛒 Stress-Free Shopping List</mat-card-title>
         </mat-card-header>
         <mat-card-content>
-          PlanEat automatski generira popis za kupovinu na temelju vašeg plana –
-          bez zaboravljenih sastojaka.
+          PlanEat automatically generates a shopping list based on your meal plan – no more forgotten ingredients.
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>
   </mat-grid-list>
 
-  <div
-    style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap"
-  >
-    <button mat-raised-button color="primary" routerLink="/plan">
-      Isprobaj odmah
-    </button>
-    <button mat-stroked-button color="primary" routerLink="/register">
-      Registriraj se
-    </button>
-    <button mat-stroked-button color="accent" routerLink="/login">
-      Prijavi se
-    </button>
+  <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap">
+    <router-outlet *ngIf="!isLoggedIn">
+      <button mat-stroked-button color="primary" routerLink="/register">
+        Register
+      </button>
+      <button mat-stroked-button color="accent" routerLink="/login">
+        Login
+      </button>
+    </router-outlet>
   </div>
 </div>

@@ -50,4 +50,8 @@ export class AppComponent {
   isLoggedIn() {
     return this.auth.isLoggedIn();
   }
+
+  getUserName() {
+    return this.auth.getUserName();
+  }
 }

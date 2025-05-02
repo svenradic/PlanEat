@@ -28,6 +28,7 @@ export class RecipeService {
   }
 
   addRecipe(recipe: Recipe) {
+    recipe.category = recipe.category.toLowerCase();
     const recipesRef = collection(this.firestore, 'recipes');
     const recipeWithDeletedFlag = {
       ...recipe,

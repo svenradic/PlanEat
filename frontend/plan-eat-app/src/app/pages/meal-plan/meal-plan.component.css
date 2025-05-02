@@ -1,0 +1,18 @@
+.week-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.week-label {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.save-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
