@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-edit-recipe',
@@ -17,6 +18,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    MatIconModule
   ],
   templateUrl: './edit-recipe.component.html',
   styleUrl: './edit-recipe.component.css',
@@ -36,11 +38,23 @@ export class EditRecipeComponent implements OnInit {
     console.log('ID recepta:', this.recipeId);
     if (this.recipeId) {
       this.recipeService.getRecipeById(this.recipeId).subscribe((data) => {
-        this.recipe = data[0];
-        console.log('Dohvaćeni recept:', this.recipe);
+        this.recipe = data;
+        console.log('Dohvaćeni recept:', data);
       });
     }
     console.log(this.recipe);
+  }
+
+  addIngredient() {
+    if (this.recipe) {
+      this.recipe.ingredients.push({ name: '', quantity: 0, unit: '', isBought: false });
+    }
+  } 
+
+  removeIngredient(index: number) {
+    if (this.recipe) {
+      this.recipe.ingredients.splice(index, 1);
+    }
   }
 
   saveChanges() {

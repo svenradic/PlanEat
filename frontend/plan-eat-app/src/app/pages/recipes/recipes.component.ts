@@ -8,7 +8,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButton, MatButtonModule } from '@angular/material/button';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { RouterLinkActive } from '@angular/router';
 import { CategoryFilterComponent } from '../../components/category-filter/category-filter.component';
 import { Observable } from 'rxjs';
 
@@ -25,7 +24,6 @@ import { Observable } from 'rxjs';
     MatCardModule,
     RouterLink,
     RouterOutlet,
-    RouterLinkActive,
     CategoryFilterComponent,
     MatButtonModule
   ],
@@ -56,7 +54,7 @@ export class RecipesComponent {
 
   applyFilter(category: string) {
     if (category) {
-      category.toLowerCase() === 'all' ? this.ngOnInit():  this.recipeService.getRecipesByCategory(category).subscribe((data: Recipe[]) => {
+      category.toLowerCase() === 'all' ? this.ngOnInit():  this.recipeService.getRecipesByCategory(category.toLocaleLowerCase()).subscribe((data: Recipe[]) => {
         console.log('Dohvaćeni recepti:', data);
         this.recipes = data;
         

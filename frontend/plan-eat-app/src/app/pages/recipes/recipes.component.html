@@ -22,7 +22,7 @@
       <p>{{ recipe.description }}</p>
       <p><strong>Ingredients:</strong></p>
       <ul>
-        <li *ngFor="let ingredient of recipe.ingredients">{{ ingredient }}</li>
+        <li *ngFor="let ingredient of recipe.ingredients">{{ ingredient.name }}</li>
       </ul>
     </mat-card-content>
     <mat-card-actions class="actions">

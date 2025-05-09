@@ -16,10 +16,31 @@
     <input matInput [(ngModel)]="category">
   </mat-form-field>
 
-  <mat-form-field appearance="fill">
-    <mat-label>Ingredients (comma separated)</mat-label>
-    <input matInput [(ngModel)]="ingredients">
-  </mat-form-field>
+  <mat-label class="label">Ingredients</mat-label>
+  <div *ngFor="let ing of ingredients; let i = index" class="ingredient-row">
+    <mat-form-field appearance="outline" class="ingredient-field">
+      <mat-label>Ingredient Name</mat-label>
+      <input matInput [(ngModel)]="ingredients[i].name" [name]="'name_' + i">
+    </mat-form-field>
+  
+    <mat-form-field appearance="outline" class="ingredient-field small">
+      <mat-label>Quantity</mat-label>
+      <input matInput type="number" [(ngModel)]="ingredients[i].quantity" [name]="'quantity_' + i">
+    </mat-form-field>
+  
+    <mat-form-field appearance="outline" class="ingredient-field small">
+      <mat-label>Unit</mat-label>
+      <input matInput [(ngModel)]="ingredients[i].unit" [name]="'unit_' + i">
+    </mat-form-field>
+  
+    <button mat-icon-button color="warn" (click)="removeIngredient(i)">
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+  
+  <button mat-stroked-button color="primary" (click)="addIngredient()">
+    <mat-icon>add</mat-icon> Add Ingredient
+  </button>
 
-  <button mat-raised-button color="primary" (click)="saveRecipe()">Save Recipe</button>
+  <button mat-raised-button color="primary" (click)="saveRecipe()" class="save-button">Save Recipe</button>
 </div>

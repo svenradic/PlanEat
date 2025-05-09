@@ -12,6 +12,8 @@ import {
 } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { Recipe } from '../models/recipe.model';
+import { map, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -61,15 +63,18 @@ export class RecipeService {
     return updateDoc(recipeDocRef, { deleted: true });
   }
 
-  getRecipeById(id: string): Observable<Recipe[]> {
-    const recipesRef = collection(this.firestore, 'recipes');
-    const idQuery = query(
-      recipesRef,
-      where('id', '==', id),
-      where('deleted', '==', false)
+  getRecipeById(id: string): Observable<Recipe | undefined> {
+    const recipeDocRef = doc(this.firestore, 'recipes', id);
+    return docData(recipeDocRef, { idField: 'id' }).pipe(
+      map((doc: any) => {
+        if (doc?.deleted) {
+          return undefined; // Skip deleted recipes
+        }
+        // Return only the expected Recipe shape
+        const { deleted, ...rest } = doc;
+        return rest as Recipe;
+      }),
+      catchError(() => of(undefined)) // If document doesn't exist or error occurs
     );
-    return collectionData(idQuery, { idField: 'id' }) as Observable<
-      Recipe[]
-    >;
   }
 }

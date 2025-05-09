@@ -43,36 +43,44 @@ export class MealPlanComponent {
     'Saturday',
     'Sunday',
   ];
-  isLoading: boolean = false;
-  mealPlan!: MealPlan; 
+  isLoading: boolean = true;
+  mealPlan: MealPlan = {
+    weekStart: '',
+    weekEnd: '',
+    days: {}
+  };
 
   constructor(
     private mealPlanService: MealPlanService,
     private recipeService: RecipeService
-  ) {}
+  ) {
+    this.daysOfWeek.forEach(day => {
+      this.mealPlan.days[day] = {
+        breakfast: [],
+        lunch: [],
+        dinner: []
+      };
+    });
+  }
 
   ngOnInit() {
+    this.loadMealPlan();
 
     this.recipeService
       .getRecipesByCategory('breakfast')
       .subscribe((data: Recipe[]) => {
         this.breakfastRecipes = data;
-        console.log('Fetched recipes:', this.breakfastRecipes);
       });
     this.recipeService
       .getRecipesByCategory('lunch')
       .subscribe((data: Recipe[]) => {
         this.lunchRecipes = data;
-        console.log('Fetched recipes:', this.lunchRecipes);
       });
     this.recipeService
       .getRecipesByCategory('dinner')
       .subscribe((data: Recipe[]) => {
         this.dinnerRecipes = data;
-        console.log('Fetched recipes:', this.dinnerRecipes);
       });
-
-    this.loadMealPlan();
   }
 
   async loadMealPlan() {
@@ -106,7 +114,7 @@ export class MealPlanComponent {
       days: {},
     };
     this.daysOfWeek.forEach(day => {
-      emptyPlan.days[day] = {
+      emptyPlan.days![day] = {
         breakfast: [],
         lunch: [],
         dinner: []

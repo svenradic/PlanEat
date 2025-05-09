@@ -1,6 +1,8 @@
+<mat-spinner *ngIf="isLoading"></mat-spinner>
+
 <h2>Weekly Meal Plan</h2>
 
-<div class="week-navigation">
+<div class="week-navigation" *ngIf="!isLoading">
   <button mat-icon-button (click)="previousWeek()">
     <mat-icon>chevron_left</mat-icon>
   </button>
@@ -17,6 +19,7 @@
     mat-table
     [dataSource]="daysOfWeek"
     class="mat-elevation-z2 full-width"
+    *ngIf="mealPlan"
   >
     <ng-container matColumnDef="day">
       <th mat-header-cell *matHeaderCellDef>Day</th>
@@ -32,7 +35,6 @@
             [(ngModel)]="mealPlan.days[day].breakfast"
             [name]="day + '_breakfast'"
           >
-
             <mat-option
               *ngFor="let recipe of breakfastRecipes"
               [value]="recipe.id"
@@ -91,5 +93,3 @@
     </button>
   </div>
 </form>
-
-<mat-spinner *ngIf="isLoading"></mat-spinner>

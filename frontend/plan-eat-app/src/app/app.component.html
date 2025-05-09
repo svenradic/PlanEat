@@ -1,7 +1,7 @@
 <router-outlet>
   <mat-toolbar color="secondary" class="nav-bar">
     <span routerLink="/">PlanEat App</span>
-    <p>Hello {{getUserName()}}</p>
+    <p *ngIf="isLoggedIn()">Hello {{getUserName()}}</p>
     <span class="spacer"></span>
     <div>
       <a mat-button routerLink="/">Home</a>
