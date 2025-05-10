@@ -12,6 +12,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
 import { formatDate } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-meal-plan',
@@ -29,6 +30,7 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './meal-plan.component.css',
 })
 export class MealPlanComponent {
+  isMobile = false;
   displayedColumns: string[] = ['day', 'breakfast', 'lunch', 'dinner'];
   breakfastRecipes: Recipe[] = [];
   lunchRecipes: Recipe[] = [];
@@ -52,7 +54,8 @@ export class MealPlanComponent {
 
   constructor(
     private mealPlanService: MealPlanService,
-    private recipeService: RecipeService
+    private recipeService: RecipeService,
+    private breakpointObserver: BreakpointObserver
   ) {
     this.daysOfWeek.forEach(day => {
       this.mealPlan.days[day] = {
@@ -61,6 +64,8 @@ export class MealPlanComponent {
         dinner: []
       };
     });
+     this.breakpointObserver.observe([Breakpoints.Handset])
+      .subscribe(result => this.isMobile = result.matches);
   }
 
   ngOnInit() {
@@ -133,6 +138,10 @@ export class MealPlanComponent {
     );
     return startOfWeek;
   }
+
+  formatDate(date: Date): string {
+    return formatDate(date, 'dd.MM.yyyy.', 'en-US');
+  }
   getEndOfWeek(): Date {
     const now = this.currentWeekStart;
     const day = now.getDay() || 7;
@@ -152,10 +161,6 @@ export class MealPlanComponent {
   nextWeek() {
     this.currentWeekStart.setDate(this.currentWeekStart.getDate() + 7);
     this.loadMealPlan();
-  }
-
-  formatDate(date: Date): string {
-    return formatDate(date, 'yyyy-MM-dd', 'en-US');
   }
 
   async saveMealPlan() {

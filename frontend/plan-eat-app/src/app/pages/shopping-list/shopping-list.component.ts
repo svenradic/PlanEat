@@ -30,7 +30,7 @@ import { ShoppingListService } from '../../services/shopping-list.service';
 })
 export class ShoppingListComponent {
   mealPlans: MealPlan[] = [];
-  selectedWeek: string = '';
+  selectedWeek: string = ''
   shoppingList: Ingredient[] = [];
   recipes: Recipe[] = [];
   isLoading: boolean = true;
@@ -40,9 +40,16 @@ export class ShoppingListComponent {
     private recipeService: RecipeService,
     private shoppingListService: ShoppingListService
   ) {}
-  ngOnInit() {
+  async ngOnInit() {
     this.loadMealPlans();
-    this.generateShoppingList();
+    const currentDate = new Date();
+    const firstDayOfWeek = new Date(currentDate.setDate(currentDate.getDate() - currentDate.getDay() + 1));
+    this.selectedWeek = firstDayOfWeek.toISOString().split('T')[0];
+    const list = await this.loadShoppingList();
+    if (list.length === 0) {
+      console.log("Shopping list is empty. Generating from recipes...");
+      await this.generateShoppingList();
+    }
   }
 
   loadMealPlans() {
@@ -114,8 +121,6 @@ export class ShoppingListComponent {
     this.selectedWeek = week;
     console.log('Odabrani tjedan:', this.selectedWeek);
     const list = await this.loadShoppingList();
-    console.log('Lista za kupovinu:', list);
-  
     if (list.length === 0) {
       console.log("Shopping list is empty. Generating from recipes...");
       await this.generateShoppingList();

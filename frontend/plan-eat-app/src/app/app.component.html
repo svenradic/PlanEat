@@ -1,4 +1,4 @@
-<router-outlet>
+<!-- <router-outlet>
   <mat-toolbar color="secondary" class="nav-bar">
     <span routerLink="/">PlanEat App</span>
     <p *ngIf="isLoggedIn()">Hello {{getUserName()}}</p>
@@ -11,4 +11,48 @@
       <button *ngIf="isLoggedIn()" mat-button (click)="logout()">Logout</button>
     </div>
   </mat-toolbar>
-</router-outlet>
+</router-outlet> -->
+
+<mat-toolbar color="secondary" class="nav-bar">
+  <span routerLink="/">PlanEat App</span>
+  <p style="font-weight: medium" *ngIf="!isHandset && isLoggedIn()">
+    Hello {{ getUserName() }}
+  </p>
+  <span class="spacer"></span>
+
+  <!-- Desktop Menu -->
+  <ng-container *ngIf="!isHandset" class="desktop-menu">
+    <a mat-button routerLink="/" style="color: black">Home</a>
+    <a mat-button routerLink="/recipes" style="color: black">Recipes</a>
+    <a mat-button routerLink="/meal-plan" style="color: black">Meal Plan</a>
+    <a mat-button routerLink="/shopping-list" style="color: black"
+      >Shopping List</a
+    >
+    <button
+      *ngIf="isLoggedIn()"
+      mat-button
+      (click)="logout()"
+      style="color: black"
+    >
+      Logout
+    </button>
+  </ng-container>
+
+  <!-- Mobile Menu Button -->
+  <ng-container *ngIf="isHandset">
+    <button mat-icon-button [matMenuTriggerFor]="mobileMenu">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <mat-menu #mobileMenu="matMenu">
+      <button mat-menu-item routerLink="/">Home</button>
+      <button mat-menu-item routerLink="/recipes">Recipes</button>
+      <button mat-menu-item routerLink="/meal-plan">Meal Plan</button>
+      <button mat-menu-item routerLink="/shopping-list">Shopping List</button>
+      <button *ngIf="isLoggedIn()" mat-menu-item (click)="logout()">
+        Logout
+      </button>
+    </mat-menu>
+  </ng-container>
+</mat-toolbar>
+
+<router-outlet></router-outlet>
