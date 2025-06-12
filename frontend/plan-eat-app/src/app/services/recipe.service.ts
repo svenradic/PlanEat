@@ -1,80 +1,44 @@
 import { Injectable } from '@angular/core';
-import {
-  Firestore,
-  collection,
-  collectionData,
-  addDoc,
-  query,
-  where,
-  doc,
-  updateDoc,
-  docData,
-} from '@angular/fire/firestore';
+
 import { Observable } from 'rxjs';
 import { Recipe } from '../models/recipe.model';
 import { map, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { API_BASE_URL } from '../api.config';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RecipeService {
-  constructor(private firestore: Firestore) {}
+  constructor(private http: HttpClient) {}
 
   getRecipes(): Observable<Recipe[]> {
-    const recipesRef = collection(this.firestore, 'recipes');
-    const recipesQuery = query(recipesRef, where('deleted', '==', false));
-    return collectionData(recipesQuery, { idField: 'id' }) as Observable<
-      Recipe[]
-    >;
+    return this.http.get<Recipe[]>(`${API_BASE_URL}/recipes`);
   }
 
   addRecipe(recipe: Recipe) {
     recipe.category = recipe.category.toLowerCase();
-    const recipesRef = collection(this.firestore, 'recipes');
-    const recipeWithDeletedFlag = {
-      ...recipe,
-      deleted: false,
-    };
-    return addDoc(recipesRef, recipeWithDeletedFlag);
+    return this.http.post(`${API_BASE_URL}/recipes`, recipe);
   }
 
   getRecipesByCategory(category: string): Observable<Recipe[]> {
-    const recipesRef = collection(this.firestore, 'recipes');
-    const categoryQuery = query(
-      recipesRef,
-      where('category', '==', category),
-      where('deleted', '==', false)
+    return this.http.get<Recipe[]>(
+      `${API_BASE_URL}/recipes/category/${category.toLowerCase()}`
     );
-    return collectionData(categoryQuery, { idField: 'id' }) as Observable<
-      Recipe[]
-    >;
   }
 
   editRecipe(recipeId: string, updatedRecipe: Recipe) {
-    const recipesRef = collection(this.firestore, 'recipes');
-    const recipeDocRef = doc(recipesRef, recipeId);
-    return updateDoc(recipeDocRef, { ...updatedRecipe });
+    return this.http.put(`${API_BASE_URL}/recipes/${recipeId}`, updatedRecipe);
   }
 
-  deleteRecipe(recipeId: string) {
-    const recipesRef = collection(this.firestore, 'recipes');
-    const recipeDocRef = doc(recipesRef, recipeId);
-    return updateDoc(recipeDocRef, { deleted: true });
+  deleteRecipe(recipeId: string): Promise<any> {
+    return this.http.delete(`${API_BASE_URL}/recipes/${recipeId}`).toPromise();
   }
 
   getRecipeById(id: string): Observable<Recipe | undefined> {
-    const recipeDocRef = doc(this.firestore, 'recipes', id);
-    return docData(recipeDocRef, { idField: 'id' }).pipe(
-      map((doc: any) => {
-        if (doc?.deleted) {
-          return undefined; // Skip deleted recipes
-        }
-        // Return only the expected Recipe shape
-        const { deleted, ...rest } = doc;
-        return rest as Recipe;
-      }),
-      catchError(() => of(undefined)) // If document doesn't exist or error occurs
-    );
+    return this.http
+      .get<Recipe>(`${API_BASE_URL}/recipes/${id}`)
+      .pipe(catchError(() => of(undefined)));
   }
 }

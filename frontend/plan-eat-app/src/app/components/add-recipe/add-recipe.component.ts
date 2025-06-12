@@ -11,6 +11,7 @@ import { MatIcon, MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-add-recipe',
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -30,25 +31,37 @@ export class AddRecipeComponent {
 
   constructor(private recipeService: RecipeService, private router: Router) {}
 
-  addIngredient(){
-    this.ingredients.push({ id: this.generateId(), name: '', quantity: 0, unit: '', isBought: false });
+  addIngredient() {
+    this.ingredients.push({
+      id: this.generateId(),
+      name: '',
+      quantity: 0,
+      unit: '',
+      isBought: false,
+    });
   }
 
   removeIngredient(index: number) {
     this.ingredients.splice(index, 1);
   }
 
-  saveRecipe() {
-    const newRecipe = {
-      title: this.title,
-      description: this.description,
-      category: this.category,
-      ingredients: this.ingredients
-    };
+  async saveRecipe() {
+    try {
+      const newRecipe = {
+        title: this.title,
+        description: this.description,
+        category: this.category,
+        ingredients: this.ingredients,
+      };
 
-    this.recipeService.addRecipe(newRecipe).then(() => {
-      this.router.navigate(['/recipes']);
-    });
+      this.recipeService.addRecipe(newRecipe).subscribe({
+        next: () => this.router.navigate(['/recipes']),
+        error: (err) =>
+          console.error('Greška prilikom spremanja recepta:', err),
+      });
+    } catch (error) {
+      console.error('Greška prilikom dodavanja recepta:', error);
+    }
   }
 
   generateId(): string {

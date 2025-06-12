@@ -18,7 +18,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
   ],
   templateUrl: './edit-recipe.component.html',
   styleUrl: './edit-recipe.component.css',
@@ -47,9 +47,14 @@ export class EditRecipeComponent implements OnInit {
 
   addIngredient() {
     if (this.recipe) {
-      this.recipe.ingredients.push({ name: '', quantity: 0, unit: '', isBought: false });
+      this.recipe.ingredients.push({
+        name: '',
+        quantity: 0,
+        unit: '',
+        isBought: false,
+      });
     }
-  } 
+  }
 
   removeIngredient(index: number) {
     if (this.recipe) {
@@ -57,11 +62,19 @@ export class EditRecipeComponent implements OnInit {
     }
   }
 
-  saveChanges() {
+  async saveChanges() {
     if (this.recipeId && this.recipe) {
-      this.recipeService.editRecipe(this.recipeId, this.recipe).then(() => {
-        this.router.navigate(['/recipes']);
-      });
+      try {
+        await this.recipeService
+          .editRecipe(this.recipeId, this.recipe)
+          .subscribe({
+            next: () => this.router.navigate(['/recipes']),
+            error: (err) =>
+              console.error('Greška prilikom spremanja promjena:', err),
+          });
+      } catch (error) {
+        console.error('Greška prilikom spremanja promjena:', error);
+      }
     }
   }
 }

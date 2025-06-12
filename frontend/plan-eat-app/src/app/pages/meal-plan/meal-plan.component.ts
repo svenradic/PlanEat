@@ -24,7 +24,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
     MatTableModule,
     MatProgressSpinnerModule,
     FormsModule,
-    MatIconModule
+    MatIconModule,
   ],
   templateUrl: './meal-plan.component.html',
   styleUrl: './meal-plan.component.css',
@@ -49,7 +49,7 @@ export class MealPlanComponent {
   mealPlan: MealPlan = {
     weekStart: '',
     weekEnd: '',
-    days: {}
+    days: {},
   };
 
   constructor(
@@ -57,15 +57,16 @@ export class MealPlanComponent {
     private recipeService: RecipeService,
     private breakpointObserver: BreakpointObserver
   ) {
-    this.daysOfWeek.forEach(day => {
+    this.daysOfWeek.forEach((day) => {
       this.mealPlan.days[day] = {
         breakfast: [],
         lunch: [],
-        dinner: []
+        dinner: [],
       };
     });
-     this.breakpointObserver.observe([Breakpoints.Handset])
-      .subscribe(result => this.isMobile = result.matches);
+    this.breakpointObserver
+      .observe([Breakpoints.Handset])
+      .subscribe((result) => (this.isMobile = result.matches));
   }
 
   ngOnInit() {
@@ -93,19 +94,23 @@ export class MealPlanComponent {
     const weekStartStr = this.formatDate(this.currentWeekStart);
     try {
       this.mealPlanService
-      .getMealPlan(weekStartStr)
-      .subscribe((data: MealPlan) => {
-        if (data) {
-          this.mealPlan = data;
-          console.log('Fetched meal plan:', this.mealPlan);
-        }
-        else {
-          this.mealPlan = this.createEmptyMealPlan(weekStartStr);
-          this.mealPlanService.saveMealPlan(this.mealPlan).then(() => {
-            console.log('Meal plan created successfully!');
-          });
-        }
-    });
+        .getMealPlan(weekStartStr)
+        .subscribe((data: MealPlan | null) => {
+          if (data) {
+            this.mealPlan = data;
+            console.log('Fetched meal plan:', this.mealPlan);
+          } else {
+            this.mealPlan = this.createEmptyMealPlan(weekStartStr);
+            this.mealPlanService.saveMealPlan(this.mealPlan).subscribe({
+              next: () => {
+                console.log('Meal plan created successfully!');
+              },
+              error: (err) => {
+                console.error('Greška prilikom spremanja plana obroka:', err);
+              },
+            });
+          }
+        });
     } catch (err) {
       console.error('Error loading meal plan:', err);
     }
@@ -118,11 +123,11 @@ export class MealPlanComponent {
       weekEnd: this.formatDate(this.getEndOfWeek()),
       days: {},
     };
-    this.daysOfWeek.forEach(day => {
+    this.daysOfWeek.forEach((day) => {
       emptyPlan.days![day] = {
         breakfast: [],
         lunch: [],
-        dinner: []
+        dinner: [],
       };
     });
     return emptyPlan;
@@ -163,10 +168,16 @@ export class MealPlanComponent {
     this.loadMealPlan();
   }
 
-  async saveMealPlan() {
+  saveMealPlan() {
     try {
-      await this.mealPlanService.saveMealPlan(this.mealPlan);
-      console.log('Meal plan saved successfully!');
+      this.mealPlanService.saveMealPlan(this.mealPlan).subscribe({
+        next: () => {
+          console.log('Meal plan saved successfully!');
+        },
+        error: (err) => {
+          console.error('Error saving meal plan:', err);
+        },
+      });
     } catch (error) {
       console.error('Error saving meal plan:', error);
     }
