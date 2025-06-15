@@ -7,7 +7,7 @@
     (selectionChange)="setSelectedWeek($event.value)"
   >
     <mat-option *ngFor="let plan of mealPlans" [value]="plan.weekStart">
-      {{ plan.weekStart }} - {{ plan.weekEnd }}
+      {{ plan.weekStart | date:'dd.MM.yyyy.'}} - {{ plan.weekEnd | date:'dd.MM.yyyy.' }}
     </mat-option>
   </mat-select>
 </mat-form-field>
@@ -44,6 +44,7 @@
       <th mat-header-cell *matHeaderCellDef>✔️</th>
       <td mat-cell *matCellDef="let item">
         <mat-checkbox
+          [disabled]="isLoading"
           [(ngModel)]="item.isBought"
           (change)="toggleIngredient(item)"
         ></mat-checkbox>

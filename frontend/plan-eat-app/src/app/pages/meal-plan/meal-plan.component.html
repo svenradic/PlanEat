@@ -6,14 +6,16 @@
   <button mat-icon-button (click)="previousWeek()">
     <mat-icon>chevron_left</mat-icon>
   </button>
-  <span class="week-label">{{ mealPlan.weekStart }} - {{ mealPlan.weekEnd }}</span>
+  <span class="week-label"
+    >{{ mealPlan.weekStart | date : "dd.MM.yyyy." }} -
+    {{ mealPlan.weekEnd | date : "dd.MM.yyyy." }}</span
+  >
   <button mat-icon-button (click)="nextWeek()">
     <mat-icon>chevron_right</mat-icon>
   </button>
 </div>
 
 <form (ngSubmit)="saveMealPlan()" *ngIf="!isLoading" class="meal-plan-form">
-
   <!-- DESKTOP VIEW -->
   <div class="table-wrapper" *ngIf="!isMobile">
     <table
@@ -36,7 +38,10 @@
               [(ngModel)]="mealPlan.days[day].breakfast"
               [name]="day + '_breakfast'"
             >
-              <mat-option *ngFor="let recipe of breakfastRecipes" [value]="recipe.id">
+              <mat-option
+                *ngFor="let recipe of breakfastRecipes"
+                [value]="recipe.id"
+              >
                 {{ recipe.title }}
               </mat-option>
             </mat-select>
@@ -53,7 +58,10 @@
               [(ngModel)]="mealPlan.days[day].lunch"
               [name]="day + '_lunch'"
             >
-              <mat-option *ngFor="let recipe of lunchRecipes" [value]="recipe.id">
+              <mat-option
+                *ngFor="let recipe of lunchRecipes"
+                [value]="recipe.id"
+              >
                 {{ recipe.title }}
               </mat-option>
             </mat-select>
@@ -70,7 +78,10 @@
               [(ngModel)]="mealPlan.days[day].dinner"
               [name]="day + '_dinner'"
             >
-              <mat-option *ngFor="let recipe of dinnerRecipes" [value]="recipe.id">
+              <mat-option
+                *ngFor="let recipe of dinnerRecipes"
+                [value]="recipe.id"
+              >
                 {{ recipe.title }}
               </mat-option>
             </mat-select>
@@ -85,7 +96,10 @@
 
   <!-- MOBILE VIEW -->
   <div *ngIf="isMobile">
-    <div *ngFor="let day of daysOfWeek" class="mobile-day-card mat-elevation-z2">
+    <div
+      *ngFor="let day of daysOfWeek"
+      class="mobile-day-card mat-elevation-z2"
+    >
       <h3>{{ day }}</h3>
 
       <mat-form-field appearance="fill" class="mobile-select">
@@ -95,7 +109,10 @@
           [(ngModel)]="mealPlan.days[day].breakfast"
           [name]="day + '_breakfast'"
         >
-          <mat-option *ngFor="let recipe of breakfastRecipes" [value]="recipe.id">
+          <mat-option
+            *ngFor="let recipe of breakfastRecipes"
+            [value]="recipe.id"
+          >
             {{ recipe.title }}
           </mat-option>
         </mat-select>

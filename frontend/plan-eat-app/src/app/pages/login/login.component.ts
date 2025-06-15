@@ -7,7 +7,13 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, FormsModule, MatButtonModule, RouterLink, RouterOutlet],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatButtonModule,
+    RouterLink,
+    RouterOutlet,
+  ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
@@ -18,24 +24,24 @@ export class LoginComponent {
   constructor(private authService: AuthService, private router: Router) {}
 
   loginGoogle() {
-    this.authService
-      .loginWithGoogle()
-      .then(() => {
+    this.authService.loginWithGoogle().subscribe({
+      next: () => {
         this.router.navigate(['/recipes']);
-      })
-      .catch((error) => {
+      },
+      error: (error) => {
         console.error('Greška prilikom prijave:', error);
-      });
+      },
+    });
   }
 
   loginEmail() {
-    this.authService
-      .loginWithEmail(this.email, this.password)
-      .then(() => {
+    this.authService.login(this.email, this.password).subscribe({
+      next: () => {
         this.router.navigate(['/recipes']);
-      })
-      .catch((error) => {
+      },
+      error: (error) => {
         console.error('Greška prilikom prijave:', error);
-      });
+      },
+    });
   }
 }

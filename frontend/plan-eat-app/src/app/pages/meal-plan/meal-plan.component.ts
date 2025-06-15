@@ -13,6 +13,9 @@ import { FormsModule } from '@angular/forms';
 import { formatDate } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { DateUtilService } from '../../services/date-util-service.service';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-meal-plan',
@@ -55,7 +58,10 @@ export class MealPlanComponent {
   constructor(
     private mealPlanService: MealPlanService,
     private recipeService: RecipeService,
-    private breakpointObserver: BreakpointObserver
+    private breakpointObserver: BreakpointObserver,
+    private dateUtil: DateUtilService,
+    private auth: AuthService,
+    private router: Router
   ) {
     this.daysOfWeek.forEach((day) => {
       this.mealPlan.days[day] = {
@@ -70,6 +76,10 @@ export class MealPlanComponent {
   }
 
   ngOnInit() {
+     if (!this.auth.isLoggedIn()) {
+      this.router.navigate(['/']); // redirect to login
+    }
+
     this.loadMealPlan();
 
     this.recipeService
@@ -89,9 +99,9 @@ export class MealPlanComponent {
       });
   }
 
-  async loadMealPlan() {
+  loadMealPlan() {
     this.isLoading = true;
-    const weekStartStr = this.formatDate(this.currentWeekStart);
+    const weekStartStr = this.formatDateForServer(this.currentWeekStart);
     try {
       this.mealPlanService
         .getMealPlan(weekStartStr)
@@ -101,14 +111,7 @@ export class MealPlanComponent {
             console.log('Fetched meal plan:', this.mealPlan);
           } else {
             this.mealPlan = this.createEmptyMealPlan(weekStartStr);
-            this.mealPlanService.saveMealPlan(this.mealPlan).subscribe({
-              next: () => {
-                console.log('Meal plan created successfully!');
-              },
-              error: (err) => {
-                console.error('Greška prilikom spremanja plana obroka:', err);
-              },
-            });
+            this.saveMealPlan();
           }
         });
     } catch (err) {
@@ -120,7 +123,7 @@ export class MealPlanComponent {
   createEmptyMealPlan(weekStart: string): MealPlan {
     const emptyPlan: MealPlan = {
       weekStart,
-      weekEnd: this.formatDate(this.getEndOfWeek()),
+      weekEnd: this.formatDateForServer(this.getEndOfWeek()),
       days: {},
     };
     this.daysOfWeek.forEach((day) => {
@@ -144,9 +147,14 @@ export class MealPlanComponent {
     return startOfWeek;
   }
 
-  formatDate(date: Date): string {
-    return formatDate(date, 'dd.MM.yyyy.', 'en-US');
+  formatDateForPage(date: Date): string {
+    return this.dateUtil.formatForPage(date);
   }
+
+  formatDateForServer(date: Date): string {
+    return this.dateUtil.formatForServer(date);
+  }
+
   getEndOfWeek(): Date {
     const now = this.currentWeekStart;
     const day = now.getDay() || 7;

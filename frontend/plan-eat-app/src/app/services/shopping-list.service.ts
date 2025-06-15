@@ -2,48 +2,43 @@ import { Injectable } from '@angular/core';
 import { Firestore } from '@angular/fire/firestore';
 import { AuthService } from './auth.service';
 import { Ingredient } from '../models/ingredient.model';
-import { collection, setDoc, doc, collectionData } from '@angular/fire/firestore';
+import { API_BASE_URL } from '../api.config';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ShoppingListService {
+  constructor(private http: HttpClient, private auth: AuthService) {}
 
-  constructor(private firestore: Firestore, private auth: AuthService) { }
-
-  async saveShoppingList(weekStart: string, ingredients: Ingredient[]) {
-    const userId = this.auth.getUserId();
-    const shoppingListRef = collection(
-      this.firestore,
-      `users/${userId}/meal-plans/${weekStart}/shopping-list`
-    );
-  
-    const batch = ingredients.map(item =>
-      setDoc(doc(shoppingListRef), item) // auto-ID for each ingredient
-    );
-  
-    await Promise.all(batch);
+  saveShoppingList(
+    weekStart: string,
+    ingredients: Ingredient[]
+  ): Observable<any> {
+    const userId = this.auth.getUserIdSync();
+    return this.http.post(`${API_BASE_URL}/shopping-list`, {
+      userId,
+      weekStart,
+      ingredients,
+    });
   }
 
-  async updateShoppingList(weekStart: string, ingredient: Ingredient) {
-    const userId = this.auth.getUserId();
-  
-    // Use doc() directly to point to a single document
-    const docRef = doc(
-      this.firestore,
-      `users/${userId}/meal-plans/${weekStart}/shopping-list/${ingredient.id}`
+  updateShoppingList(
+    weekStart: string,
+    ingredient: Ingredient
+  ): Observable<any> {
+    const userId = this.auth.getUserIdSync();
+    return this.http.put(
+      `${API_BASE_URL}/shopping-list/${userId}/${weekStart}/${ingredient.id}`,
+      ingredient
     );
-  
-    await setDoc(docRef, ingredient);
   }
 
   getShoppingList(weekStart: string): Observable<Ingredient[]> {
-    const userId = this.auth.getUserId();
-    const listRef = collection(
-      this.firestore,
-      `users/${userId}/meal-plans/${weekStart}/shopping-list`
+    const userId = this.auth.getUserIdSync();
+    return this.http.get<Ingredient[]>(
+      `${API_BASE_URL}/shopping-list/${userId}/${weekStart}`
     );
-    return collectionData(listRef, { idField: 'id' }) as Observable<Ingredient[]>;
   }
 }

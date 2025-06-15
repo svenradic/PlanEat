@@ -9,7 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
   selector: 'app-register',
   imports: [CommonModule, FormsModule, MatButtonModule],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.css'
+  styleUrl: './register.component.css',
 })
 export class RegisterComponent {
   email: string = '';
@@ -18,10 +18,13 @@ export class RegisterComponent {
   constructor(private authService: AuthService, private router: Router) {}
 
   register() {
-    this.authService.register(this.email, this.password).then(() => {
-      this.router.navigate(['/recipes']);
-    }).catch((error) => {
-      console.error('Greška prilikom registracije:', error);
+    this.authService.register(this.email, this.password).subscribe({
+      next: () => {
+        this.router.navigate(['/recipes']);
+      },
+      error: (error) => {
+        console.error('Greška prilikom registracije:', error);
+      },
     });
   }
 }

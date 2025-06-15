@@ -7,9 +7,10 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButton, MatButtonModule } from '@angular/material/button';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { CategoryFilterComponent } from '../../components/category-filter/category-filter.component';
 import { Observable } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-recipes',
@@ -25,7 +26,7 @@ import { Observable } from 'rxjs';
     RouterLink,
     RouterOutlet,
     CategoryFilterComponent,
-    MatButtonModule
+    MatButtonModule,
   ],
   templateUrl: './recipes.component.html',
   styleUrl: './recipes.component.css',
@@ -33,33 +34,43 @@ import { Observable } from 'rxjs';
 export class RecipesComponent {
   recipes: Recipe[] = [];
 
-  constructor(private recipeService: RecipeService) {}
+  constructor(private recipeService: RecipeService, private auth: AuthService, private router: Router) {}
 
   ngOnInit() {
+    if (!this.auth.isLoggedIn()) {
+      this.router.navigate(['/']); // redirect to login
+    }
+
     this.recipeService.getRecipes().subscribe((data: Recipe[]) => {
       this.recipes = data;
       console.log('Dohvaćeni recepti:', this.recipes);
     });
   }
-  
-  deleteRecipe(recipeId?: string){
-    if(!recipeId) return;
-    this.recipeService.deleteRecipe(recipeId).then(() => {
-      console.log('Recept uspješno obrisan!');
-      this.recipes = this.recipes.filter(recipe => recipe.id !== recipeId);
-    }).catch((error) => {
-      console.error('Greška prilikom brisanja recepta:', error);
-    });
+
+  deleteRecipe(recipeId?: string) {
+    if (!recipeId) return;
+    this.recipeService
+      .deleteRecipe(recipeId)
+      .then(() => {
+        console.log('Recept uspješno obrisan!');
+        this.recipes = this.recipes.filter((recipe) => recipe.id !== recipeId);
+      })
+      .catch((error) => {
+        console.error('Greška prilikom brisanja recepta:', error);
+      });
   }
 
   applyFilter(category: string) {
     if (category) {
-      category.toLowerCase() === 'all' ? this.ngOnInit():  this.recipeService.getRecipesByCategory(category.toLocaleLowerCase()).subscribe((data: Recipe[]) => {
-        console.log('Dohvaćeni recepti:', data);
-        this.recipes = data;
-        
-      });
-    } else{
+      category.toLowerCase() === 'all'
+        ? this.ngOnInit()
+        : this.recipeService
+            .getRecipesByCategory(category.toLocaleLowerCase())
+            .subscribe((data: Recipe[]) => {
+              console.log('Dohvaćeni recepti:', data);
+              this.recipes = data;
+            });
+    } else {
       this.ngOnInit();
     }
   }

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { Recipe } from './models/recipe.model';
 import { RecipeService } from './services/recipe.service';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -10,6 +10,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -22,7 +23,7 @@ import { MatMenuModule } from '@angular/material/menu';
     MatButtonModule,
     MatSidenavModule,
     MatIconModule,
-    MatMenuModule
+    MatMenuModule,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
@@ -30,6 +31,7 @@ import { MatMenuModule } from '@angular/material/menu';
 export class AppComponent {
   recipes: Recipe[] = [];
   isHandset: boolean = false;
+  userName: string | null = null;
 
   constructor(
     private recipeService: RecipeService,
@@ -46,25 +48,28 @@ export class AppComponent {
     this.recipeService.getRecipes().subscribe((data: Recipe[]) => {
       this.recipes = data;
     });
+
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.getUserName();
+      });
+
+    this.getUserName();
+
+    this.getUserName();
   }
 
   logout() {
-    this.auth
-      .logout()
-      .then(() => {
-        console.log('Uspješno ste se odjavili!');
-        this.router.navigate(['/']);
-      })
-      .catch((error) => {
-        console.error('Greška prilikom odjave:', error);
-      });
+    this.auth.logout();
+    this.router.navigate(['/']);
   }
 
   isLoggedIn() {
     return this.auth.isLoggedIn();
   }
 
-  getUserName() {
-    return this.auth.getUserName();
+  async getUserName() {
+    this.userName = await this.auth.getUserName();
   }
 }

@@ -14,17 +14,17 @@ export class MealPlanService {
   constructor(private http: HttpClient, private auth: AuthService) {}
 
   saveMealPlan(mealPlan: MealPlan) {
-    const userId = this.auth.getUserId();
+    const userId = this.auth.getUserIdSync();
     return this.http.post(`${API_BASE_URL}/meal-plans`, { userId, mealPlan });
   }
 
   getAllMealPlans(): Observable<MealPlan[]> {
-    const userId = this.auth.getUserId();
+    const userId = this.auth.getUserIdSync();
     return this.http.get<MealPlan[]>(`${API_BASE_URL}/meal-plans/${userId}`);
   }
 
   getMealPlan(weekStart: string): Observable<MealPlan | null> {
-    const userId = this.auth.getUserId();
+    const userId = this.auth.getUserIdSync();
     return this.http
       .get<MealPlan>(`${API_BASE_URL}/meal-plans/${userId}/${weekStart}`)
       .pipe(
@@ -33,7 +33,7 @@ export class MealPlanService {
   }
 
   updateMealPlan(weekStart: string, updatedMealPlan: Partial<MealPlan>) {
-    const userId = this.auth.getUserId();
+    const userId = this.auth.getUserIdSync();
     if (!userId) {
       throw new Error('User not authenticated');
     }

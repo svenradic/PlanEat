@@ -1,4 +1,4 @@
-const db = require("../services/firebaseService"); // your initialized Firestore
+const {db} = require("../services/firebaseService"); // your initialized Firestore
 
 exports.saveMealPlan = async (req, res) => {
   try {
@@ -18,11 +18,20 @@ exports.saveMealPlan = async (req, res) => {
 exports.getAllMealPlans = async (req, res) => {
   try {
     const { userId } = req.params;
-    const collectionRef = db
-      .collection(`users/${userId}/meal-plans`)
-      .orderBy("weekStart", "desc");
+    const collectionRef = db.collection(`users/${userId}/meal-plans`);
     const snapshot = await collectionRef.get();
-    const plans = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+
+    let plans = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    plans = plans.sort((a, b) => {
+      const dateA = new Date(a.weekStart);
+      const dateB = new Date(b.weekStart);
+      return dateB - dateA;
+    });
+
     res.json(plans);
   } catch (err) {
     res.status(500).json({ error: err.message });

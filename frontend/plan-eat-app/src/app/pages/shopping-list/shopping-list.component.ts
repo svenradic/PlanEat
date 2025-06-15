@@ -13,6 +13,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { ShoppingListService } from '../../services/shopping-list.service';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-shopping-list',
@@ -30,7 +32,7 @@ import { ShoppingListService } from '../../services/shopping-list.service';
 })
 export class ShoppingListComponent {
   mealPlans: MealPlan[] = [];
-  selectedWeek: string = ''
+  selectedWeek: string = '';
   shoppingList: Ingredient[] = [];
   recipes: Recipe[] = [];
   isLoading: boolean = true;
@@ -38,16 +40,24 @@ export class ShoppingListComponent {
   constructor(
     private mealPlanService: MealPlanService,
     private recipeService: RecipeService,
-    private shoppingListService: ShoppingListService
+    private shoppingListService: ShoppingListService,
+    private auth: AuthService,
+    private router: Router
   ) {}
   async ngOnInit() {
+     if (!this.auth.isLoggedIn()) {
+      this.router.navigate(['/']); // redirect to login
+    }
+
     this.loadMealPlans();
     const currentDate = new Date();
-    const firstDayOfWeek = new Date(currentDate.setDate(currentDate.getDate() - currentDate.getDay() + 1));
+    const firstDayOfWeek = new Date(
+      currentDate.setDate(currentDate.getDate() - currentDate.getDay() + 1)
+    );
     this.selectedWeek = firstDayOfWeek.toISOString().split('T')[0];
     const list = await this.loadShoppingList();
     if (list.length === 0) {
-      console.log("Shopping list is empty. Generating from recipes...");
+      console.log('Shopping list is empty. Generating from recipes...');
       await this.generateShoppingList();
     }
   }
@@ -64,7 +74,7 @@ export class ShoppingListComponent {
 
   async loadShoppingList(): Promise<Ingredient[]> {
     if (!this.selectedWeek) return [];
-  
+
     const list$ = this.shoppingListService.getShoppingList(this.selectedWeek);
     const list = await firstValueFrom(list$);
     this.shoppingList = list;
@@ -80,7 +90,7 @@ export class ShoppingListComponent {
       const selectedMealPlan = this.mealPlans.find(
         (plan) => plan.weekStart === this.selectedWeek
       );
- 
+
       if (selectedMealPlan) {
         for (const day of Object.keys(selectedMealPlan.days)) {
           recipeIds = recipeIds.concat(
@@ -110,11 +120,20 @@ export class ShoppingListComponent {
             }
           }
         }
-       
       }
     }
-    await this.saveShoppingList();
-    this.isLoading = false;
+    this.shoppingListService
+      .saveShoppingList(this.selectedWeek, this.shoppingList)
+      .subscribe({
+        next: (savedIngredients: Ingredient[]) => {
+          this.shoppingList = savedIngredients; // Update with IDs returned from backend
+          console.log('Shopping list saved and updated with IDs');
+          this.isLoading = false;
+        },
+        error: (err) => {
+          console.error('Error saving shopping list:', err);
+        },
+      });
   }
 
   async setSelectedWeek(week: string) {
@@ -122,20 +141,34 @@ export class ShoppingListComponent {
     console.log('Odabrani tjedan:', this.selectedWeek);
     const list = await this.loadShoppingList();
     if (list.length === 0) {
-      console.log("Shopping list is empty. Generating from recipes...");
+      console.log('Shopping list is empty. Generating from recipes...');
       await this.generateShoppingList();
     }
   }
 
   async saveShoppingList() {
-    await this.shoppingListService.saveShoppingList(
-      this.selectedWeek,
-      this.shoppingList
-    );
-    console.log('Shopping list saved under week:', this.selectedWeek);
+    this.shoppingListService
+      .saveShoppingList(this.selectedWeek, this.shoppingList)
+      .subscribe({
+        next: () => {
+          console.log('Shopping list saved under week:', this.selectedWeek);
+        },
+        error: (err) => {
+          console.error('Error saving shopping list:', err);
+        },
+      });
   }
 
   toggleIngredient(ingredient: Ingredient) {
-    this.shoppingListService.updateShoppingList(this.selectedWeek, ingredient);
+    this.shoppingListService
+      .updateShoppingList(this.selectedWeek, ingredient)
+      .subscribe({
+        next: () => {
+          console.log('Ingredient updated:', ingredient.name);
+        },
+        error: (err) => {
+          console.error('Error updating ingredient:', err);
+        },
+      });
   }
 }

@@ -1,4 +1,4 @@
-const db = require("../services/firebaseService");
+const {db} = require("../services/firebaseService");
 
 exports.addIngredient = async (req, res) => {
   try {
