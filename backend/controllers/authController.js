@@ -15,11 +15,32 @@ exports.verifyToken = async (req, res, next) => {
   }
 };
 
+exports.login = async (req, res) => {
+  const token = req.headers.authorization?.split("Bearer ")[1];
+  if (!token) return res.status(400).json({ error: "Missing token" });
+
+  try {
+    const decoded = await admin.auth().verifyIdToken(token);
+    const userRecord = await admin.auth().getUser(decoded.uid);
+
+    res.status(200).json({
+      user: {
+        uid: userRecord.uid,
+        email: userRecord.email,
+        name: userRecord.displayName,
+      },
+    });
+  } catch (err) {
+    console.error("Login failed:", err);
+    res.status(401).json({ error: "Invalid token" });
+  }
+};
+
 // Register a user (create user in Firebase Auth)
 exports.register = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, displayName } = req.body;
   try {
-    const userRecord = await admin.auth().createUser({ email, password });
+    const userRecord = await admin.auth().createUser({ email, password, displayName });
     res.status(201).json({ uid: userRecord.uid });
   } catch (err) {
     res.status(400).json({ error: err.message });
