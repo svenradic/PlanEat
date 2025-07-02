@@ -7,25 +7,70 @@
 
   <div class="divider">or</div>
 
-  <div class="form-group">
-    <input matInput placeholder="Email" [(ngModel)]="email" name="email" />
-    <input
-      matInput
-      type="password"
-      placeholder="Password"
-      [(ngModel)]="password"
-      name="password"
-    />
-    <button mat-raised-button color="accent" (click)="loginEmail()">
-      Login with Email
-    </button>
+  <form #loginForm="ngForm" novalidate>
+    <div class="form-group">
+      <!-- Email -->
+      <div class="input-wrapper">
+        <input
+          matInput
+          placeholder="Email"
+          name="email"
+          [(ngModel)]="email"
+          required
+          email
+          #emailModel="ngModel"
+        />
+        <div *ngIf="formSubmitted && emailModel.invalid" class="error">
+          <span *ngIf="emailModel.errors?.['required']"
+            >Email is required.</span
+          >
+          <span *ngIf="emailModel.errors?.['email']"
+            >Invalid email format.</span
+          >
+        </div>
+      </div>
 
-    <router-outlet>
-      <p
-        >Don't have an account?<span routerLink="/register">
-          Sign up
-        </span></p
+      <!-- Password -->
+      <div class="input-wrapper">
+        <input
+          matInput
+          type="password"
+          placeholder="Password"
+          name="password"
+          [(ngModel)]="password"
+          required
+          minlength="6"
+          #passwordModel="ngModel"
+        />
+        <div *ngIf="formSubmitted && passwordModel.invalid" class="error">
+          <span *ngIf="passwordModel.errors?.['required']"
+            >Password is required.</span
+          >
+          <span *ngIf="passwordModel.errors?.['minlength']">
+            Password must be at least 6 characters.
+          </span>
+        </div>
+      </div>
+
+      <div *ngIf="loginError" class="error">
+        {{ loginError }}
+      </div>
+
+      <!-- Login Button -->
+      <button
+        mat-raised-button
+        color="accent"
+        type="button"
+        (click)="loginEmail()"
       >
-    </router-outlet>
-  </div>
+        Sign in with Email
+      </button>
+
+      <!-- Sign Up Link -->
+      <p>
+        Don't have an account?
+        <span routerLink="/register">Sign up</span>
+      </p>
+    </div>
+  </form>
 </div>

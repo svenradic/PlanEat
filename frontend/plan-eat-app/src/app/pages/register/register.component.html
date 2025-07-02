@@ -1,12 +1,83 @@
 <div class="register-container">
   <h2>Welcome to PlanEat!</h2>
 
+  <form #registerForm="ngForm" novalidate>
+    <div class="form-group">
+      <!-- Email -->
+      <div class="input-wrapper">
+        <input
+          matInput
+          placeholder="Display Name"
+          name="displayName"
+          [(ngModel)]="displayName"
+          required
+          minlength="2"
+          #displayNameModel="ngModel"
+        />
+        <div *ngIf="formSubmitted && displayNameModel.invalid" class="error">
+          <span *ngIf="displayNameModel.errors?.['required']"
+            >Display Name is required.</span
+          >
+          <span *ngIf="displayNameModel.errors?.['minlength']">
+            Display Name must be at least 2 characters.
+          </span>
+        </div>
+      </div>
+      <div class="input-wrapper">
+        <input
+          matInput
+          placeholder="Email"
+          name="email"
+          [(ngModel)]="email"
+          required
+          email
+          #emailModel="ngModel"
+        />
+        <div *ngIf="formSubmitted && emailModel.invalid" class="error">
+          <span *ngIf="emailModel.errors?.['required']"
+            >Email is required.</span
+          >
+          <span *ngIf="emailModel.errors?.['email']"
+            >Invalid email format.</span
+          >
+        </div>
+      </div>
 
-  <div class="form-group">
-    <input matInput placeholder="Email" [(ngModel)]="email" name="email">
-    <input matInput type="password" placeholder="Password" [(ngModel)]="password" name="password">
-    <button mat-raised-button color="accent" (click)="register()">
-      Sign Up with Email
-    </button>
-  </div>
+      <!-- Password -->
+      <div class="input-wrapper">
+        <input
+          matInput
+          type="password"
+          placeholder="Password"
+          name="password"
+          [(ngModel)]="password"
+          required
+          minlength="6"
+          #passwordModel="ngModel"
+        />
+        <div *ngIf="formSubmitted && passwordModel.invalid" class="error">
+          <span *ngIf="passwordModel.errors?.['required']"
+            >Password is required.</span
+          >
+          <span *ngIf="passwordModel.errors?.['minlength']">
+            Password must be at least 6 characters.
+          </span>
+        </div>
+      </div>
+
+      <button
+        mat-raised-button
+        color="accent"
+        type="button"
+        (click)="register()"
+      >
+        Sign Up with Email
+      </button>
+    </div>
+  </form>
+
+  <p>
+    Don't have an account?
+    <span routerLink="/login">Sign in</span>
+  </p>
 </div>

@@ -29,15 +29,24 @@ export class AuthService {
   constructor(private http: HttpClient, private auth: Auth) {}
   private userProfile: any = null;
 
-  login(email: string, password: string): Observable<{ token: string }> {
-    return this.http
-      .post<{ token: string }>(`${API_BASE_URL}/auth/login`, {
-        email,
-        password,
-      })
-      .pipe(
-        tap((res) => this.saveToken(res.token)) // ✅ Save token
-      );
+  async login(email: string, password: string): Promise<void> {
+    return signInWithEmailAndPassword(this.auth, email, password)
+      .then((userCredential) => userCredential.user.getIdToken())
+      .then((idToken) => {
+        return this.http
+          .post<any>(
+            `${API_BASE_URL}/auth/login`,
+            {},
+            {
+              headers: { Authorization: `Bearer ${idToken}` },
+            }
+          )
+          .toPromise()
+          .then((res) => {
+            this.saveToken(idToken);
+            this.userProfile = res.user;
+          });
+      });
   }
 
   loginWithGoogle(): Observable<{ token: string }> {
@@ -60,8 +69,27 @@ export class AuthService {
     );
   }
 
-  register(email: string, password: string): Observable<any> {
-    return this.http.post(`${API_BASE_URL}/auth/register`, { email, password });
+  async register(
+    email: string,
+    password: string,
+    displayName: string
+  ): Promise<void> {
+    try {
+      // 1. Create user in backend
+      await this.http
+        .post(`${API_BASE_URL}/auth/register`, {
+          email,
+          password,
+          displayName,
+        })
+        .toPromise();
+
+      // 2. Log user in immediately using Firebase
+      await this.login(email, password);
+    } catch (err) {
+      console.error('Registration error:', err);
+      throw err; // rethrow if you want to handle it in component
+    }
   }
 
   getProfile(): Observable<any> {
@@ -126,5 +154,10 @@ export class AuthService {
       .catch((error) => {
         console.error('Logout error:', error);
       });
+  }
+
+  isValidEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   }
 }
